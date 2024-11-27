@@ -19,6 +19,17 @@ const authorTextFromRole: Map<ARIARoleDefinitionKey, (element: HTMLElement) => s
 
 const isDefinedByAuthor = (element: Element) => !!element.getAttribute('aria-labelledby')
 
+/**
+ *
+ * Implementation of [W3C](https://www.w3.org/) accessible name computation.
+ *
+ *
+ * Sources :
+ *
+ * @see {@link https://www.w3.org/TR/accname-1.2/}
+ * @see {@link https://www.w3.org/TR/wai-aria-1.2/}
+ * @see {@link https://www.w3.org/TR/html-aam/}
+ */
 export const getAccessibleName = (element: Node, options?: GetAccessibleNameOptions): string => {
   if (!isHtmlElement(element) || (!options?.targetHidden && !isVisible(element))) {
     return ''
