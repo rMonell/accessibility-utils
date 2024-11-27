@@ -58,17 +58,16 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
     return ''
   }
 
+  const root = options?.root || document
+
   if (hasRole(elementRoles, controlRoles)) {
-    const label: HTMLLabelElement | null = (options?.root || document).querySelector(
-      `label[for="${element.id}"]`
-    )
+    const label: HTMLLabelElement | null = root.querySelector(`label[for="${element.id}"]`)
     return label ? getTextContent(label) : ''
   }
 
   if (hasRole(elementRoles, nameFromAuthorOnly) || !!getAuthorIds(element)) {
     return (
-      authorTextFromRole[elementRoles[0]]?.(element) ||
-      getLabelledByAccessibleText(element, options)
+      authorTextFromRole[elementRoles[0]]?.(element) || getLabelledByAccessibleText(element, root)
     )
   }
 

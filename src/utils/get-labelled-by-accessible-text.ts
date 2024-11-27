@@ -1,17 +1,12 @@
 import { getAuthorIds, getTextContent, isHtmlElement, isVisible } from '.'
-import { GetAccessibleNameOptions } from '../types'
 
-export const getLabelledByAccessibleText = (
-  element: HTMLElement,
-  options?: GetAccessibleNameOptions
-) => {
+export const getLabelledByAccessibleText = (element: HTMLElement, root: Element | Document) => {
   const authorIds = getAuthorIds(element)
 
   if (!authorIds) {
     return ''
   }
 
-  const root = options?.root || element.ownerDocument
   const authorElements = authorIds.split(' ').reduce<HTMLElement[]>((acc, id) => {
     const el = root.querySelector(`#${id}`)
     if (!el || !isHtmlElement(el)) {
