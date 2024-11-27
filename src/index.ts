@@ -14,7 +14,14 @@ const authorTextFromRole: Map<ARIARoleDefinitionKey, (element: HTMLElement) => s
       return legendEl ? getTextContent(legendEl) : ''
     }
   ],
-  ['img', el => getTextContent(el, el.getAttribute('alt'))]
+  ['img', el => getTextContent(el, el.getAttribute('alt'))],
+  [
+    'table',
+    el => {
+      const captionEl = el.querySelector('caption')
+      return captionEl ? getTextContent(captionEl) : ''
+    }
+  ]
 ])
 
 const isDefinedByAuthor = (element: Element) => !!element.getAttribute('aria-labelledby')
