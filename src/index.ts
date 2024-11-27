@@ -13,39 +13,28 @@ import {
 import { GetAccessibleNameOptions } from './types'
 import { getLabelledByAccessibleText } from './utils/get-labelled-by-accessible-text'
 
-const authorTextFromRole: Map<ARIARoleDefinitionKey, (element: HTMLElement) => string> = new Map([
-  [
-    'group',
-    el => {
-      if (el.tagName === 'FIELDSET') {
-        const legendEl = el.querySelector('legend')
-        return legendEl ? getTextContent(legendEl) : ''
-      }
-      if (el.tagName === 'DETAILS') {
-        const legendEl = el.querySelector('summary')
-        return legendEl ? getTextContent(legendEl) : ''
-      }
-      return getTextContent(el)
+const authorTextFromRole: { [role in ARIARoleDefinitionKey]?: (element: HTMLElement) => string } = {
+  group: el => {
+    if (el.tagName === 'FIELDSET') {
+      const legendEl = el.querySelector('legend')
+      return legendEl ? getTextContent(legendEl) : ''
     }
-  ],
-  ['img', el => getTextContent(el, el.getAttribute('alt'))],
-  [
-    'table',
-    el => {
-      const captionEl = el.querySelector('caption')
-      return captionEl ? getTextContent(captionEl) : ''
+    if (el.tagName === 'DETAILS') {
+      const legendEl = el.querySelector('summary')
+      return legendEl ? getTextContent(legendEl) : ''
     }
-  ],
-  [
-    'figure',
-    el => {
-      const captionEl = el.querySelector('figcaption')
-      return captionEl ? getTextContent(captionEl) : ''
-    }
-  ]
-])
-
-const isDefinedByAuthor = (element: Element) => !!element.getAttribute('aria-labelledby')
+    return getTextContent(el)
+  },
+  img: el => getTextContent(el, el.getAttribute('alt')),
+  table: el => {
+    const captionEl = el.querySelector('caption')
+    return captionEl ? getTextContent(captionEl) : ''
+  },
+  figure: el => {
+    const captionEl = el.querySelector('figcaption')
+    return captionEl ? getTextContent(captionEl) : ''
+  }
+}
 
 /**
  *
