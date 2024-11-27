@@ -123,6 +123,19 @@ describe('getAccessibleName', () => {
       </table>
       `,
       'Age'
+    ),
+    /**
+     * Image & figure
+     */
+    makeTestAssert(
+      'figure',
+      `
+      <figure>
+        <img src="/media/cc0-images/elephant-660-480.jpg" alt="Elephant at sunset" />
+        <figcaption>An elephant at sunset</figcaption>
+      </figure>
+      `,
+      'An elephant at sunset'
     )
   ])(`should have $expectedName as accessible name`, ({ selector, html, expectedName }) => {
     const root = render(html)

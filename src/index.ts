@@ -21,6 +21,13 @@ const authorTextFromRole: Map<ARIARoleDefinitionKey, (element: HTMLElement) => s
       const captionEl = el.querySelector('caption')
       return captionEl ? getTextContent(captionEl) : ''
     }
+  ],
+  [
+    'figure',
+    el => {
+      const captionEl = el.querySelector('figcaption')
+      return captionEl ? getTextContent(captionEl) : ''
+    }
   ]
 ])
 
