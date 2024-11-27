@@ -13,14 +13,6 @@ const makeTestAssert = (selector: string, html: string, expectedName: string) =>
 })
 
 describe('getAccessibleName', () => {
-  it.only('__', () => {
-    const root = render('<button>Label</button>')
-    const target = root.querySelector('button')
-    if (!target) {
-      throw 'Error'
-    }
-    getAccessibleName(target)
-  })
   it.each([
     /**
      * Button
