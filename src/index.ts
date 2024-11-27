@@ -10,8 +10,15 @@ const authorTextFromRole: Map<ARIARoleDefinitionKey, (element: HTMLElement) => s
   [
     'group',
     el => {
-      const legendEl = el.querySelector('legend')
-      return legendEl ? getTextContent(legendEl) : ''
+      if (el.tagName === 'FIELDSET') {
+        const legendEl = el.querySelector('legend')
+        return legendEl ? getTextContent(legendEl) : ''
+      }
+      if (el.tagName === 'DETAILS') {
+        const legendEl = el.querySelector('summary')
+        return legendEl ? getTextContent(legendEl) : ''
+      }
+      return getTextContent(el)
     }
   ],
   ['img', el => getTextContent(el, el.getAttribute('alt'))],

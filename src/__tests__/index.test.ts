@@ -54,6 +54,16 @@ describe('getAccessibleName', () => {
       `,
       'Label'
     ),
+    makeTestAssert(
+      'details',
+      `
+      <details>
+        <summary>Details</summary>
+        Something small enough to escape casual notice.
+      </details>
+      `,
+      'Details'
+    ),
     /**
      * Tab
      */
