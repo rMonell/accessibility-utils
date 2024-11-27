@@ -9,7 +9,12 @@ export const mapFromArray = <TArray>(arr: TArray[]): Map<TArray, number> => {
 export const hasRole = (
   elementRoles: ARIARoleDefinitionKey[],
   list: Map<ARIARoleDefinitionKey, number>
-) => elementRoles.some(role => list.has(role))
+) => {
+  if (elementRoles.length === 1) {
+    return list.has(elementRoles[0])
+  }
+  return elementRoles.some(role => list.has(role))
+}
 
 export const getTextContent = (element: HTMLElement, defaultValue?: string | null): string => {
   const textContent =
