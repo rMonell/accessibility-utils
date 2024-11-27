@@ -1,5 +1,4 @@
-import { isHtmlElement, isVisible } from '.'
-import { getAccessibleName } from '..'
+import { getTextContent, isHtmlElement, isVisible } from '.'
 import { GetAccessibleNameOptions } from '../types'
 
 export const getLabelledByAccessibleText = (
@@ -13,9 +12,9 @@ export const getLabelledByAccessibleText = (
   }
 
   const root = options?.root || element.ownerDocument
-  const authorElements = authorIds.split(' ').reduce<Element[]>((acc, id) => {
+  const authorElements = authorIds.split(' ').reduce<HTMLElement[]>((acc, id) => {
     const el = root.querySelector(`#${id}`)
-    if (!el) {
+    if (!el || !isHtmlElement(el)) {
       return acc
     }
 
@@ -28,7 +27,5 @@ export const getLabelledByAccessibleText = (
     return isAccessible ? [...acc, el] : acc
   }, [])
 
-  return authorElements.length > 0
-    ? authorElements.map(el => getAccessibleName(el, { ...options, targetHidden: true })).join(' ')
-    : ''
+  return authorElements.length > 0 ? authorElements.map(el => getTextContent(el)).join(' ') : ''
 }
