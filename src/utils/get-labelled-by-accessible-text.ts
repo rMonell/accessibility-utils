@@ -1,11 +1,11 @@
-import { getTextContent, isHtmlElement, isVisible } from '.'
+import { getAuthorIds, getTextContent, isHtmlElement, isVisible } from '.'
 import { GetAccessibleNameOptions } from '../types'
 
 export const getLabelledByAccessibleText = (
   element: HTMLElement,
   options?: GetAccessibleNameOptions
 ) => {
-  const authorIds = element.getAttribute('aria-labelledby')
+  const authorIds = getAuthorIds(element)
 
   if (!authorIds) {
     return ''

@@ -2,7 +2,14 @@ import { controlRoles, nameFromAuthorOnly, prohibitedRoles } from './constants'
 
 import type { ARIARoleDefinitionKey } from 'aria-query'
 
-import { getElementRoles, getTextContent, hasRole, isHtmlElement, isVisible } from './utils'
+import {
+  getAuthorIds,
+  getElementRoles,
+  getTextContent,
+  hasRole,
+  isHtmlElement,
+  isVisible
+} from './utils'
 import { GetAccessibleNameOptions } from './types'
 import { getLabelledByAccessibleText } from './utils/get-labelled-by-accessible-text'
 
@@ -69,9 +76,9 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
     return label ? getTextContent(label) : ''
   }
 
-  if (hasRole(elementRoles, nameFromAuthorOnly) || isDefinedByAuthor(element)) {
+  if (hasRole(elementRoles, nameFromAuthorOnly) || !!getAuthorIds(element)) {
     return (
-      authorTextFromRole.get(elementRoles[0])?.(element) ||
+      authorTextFromRole[elementRoles[0]]?.(element) ||
       getLabelledByAccessibleText(element, options)
     )
   }

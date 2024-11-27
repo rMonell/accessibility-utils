@@ -40,6 +40,8 @@ export const isVisible = (element: HTMLElement) => {
   )
 }
 
+export const getAuthorIds = (element: Element) => element.getAttribute('aria-labelledby')
+
 export const isHtmlElement = (element: Node): element is HTMLElement => {
   return element instanceof HTMLElement
 }
