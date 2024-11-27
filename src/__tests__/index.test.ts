@@ -32,6 +32,16 @@ describe('getAccessibleName', () => {
       `,
       'Field label'
     ),
+    makeTestAssert(
+      'input',
+      `
+      <label class="label-class" for="field">
+        Field label
+        <input id="field" name="field-name" type="text" />
+      </label>
+      `,
+      'Field label'
+    ),
     /**
      * Group
      */
@@ -43,6 +53,28 @@ describe('getAccessibleName', () => {
       </fieldset>
       `,
       'Label'
+    ),
+    /**
+     * Tab
+     */
+    makeTestAssert(
+      '[aria-labelledby="tab-2"]',
+      `
+      <div>
+        <div>
+          <button id="tab-1" role="tab">Tab 1</button>
+          <button id="tab-2" role="tab">Tab 2</button>
+        </div>
+        <div>
+          <div aria-labelledby="tab-1" role="tabpanel">Tab panel 1</div>
+          <div aria-labelledby="tab-2" role="tabpanel">Tab panel 2</div>
+        </div>
+        <label for="field">Field label</label>
+        <input id="field" />
+      </div>
+      `,
+      'Tab 2'
+    ),
     /**
      * Table
      */
