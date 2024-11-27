@@ -3,38 +3,32 @@ import { mapFromArray } from './utils'
 import type { ARIARoleDefinitionKey } from 'aria-query'
 
 export const prohibitedRoles = mapFromArray<ARIARoleDefinitionKey>([
-  'none',
-  'presentation',
-  'generic'
-])
-
-export const nameFromContentsOnly = mapFromArray<ARIARoleDefinitionKey>([
-  'alert',
-  'blockquote',
   'caption',
   'code',
   'deletion',
   'emphasis',
-  'figure',
   'generic',
   'insertion',
+  'none',
   'paragraph',
   'presentation',
   'strong',
   'subscript',
-  'superscript',
-  'time'
+  'superscript'
 ])
 
 export const nameFromAuthorOnly = mapFromArray<ARIARoleDefinitionKey>([
+  'alert',
   'application',
   'article',
+  'blockquote',
   'cell',
   'columnheader',
   'definition',
   'directory',
   'document',
   'feed',
+  'figure',
   'grid',
   'gridcell',
   'group',
@@ -58,6 +52,7 @@ export const nameFromAuthorOnly = mapFromArray<ARIARoleDefinitionKey>([
   'tabpanel',
   'term',
   'textbox',
+  'time',
   'timer',
   'toolbar',
   'tooltip',
@@ -66,11 +61,11 @@ export const nameFromAuthorOnly = mapFromArray<ARIARoleDefinitionKey>([
 ])
 
 export const controlRoles = mapFromArray<ARIARoleDefinitionKey>([
-  'textbox',
-  'combobox',
   'checkbox',
-  'radio',
-  'switch',
+  'combobox',
   'listbox',
-  'range'
+  'radio',
+  'range',
+  'switch',
+  'textbox'
 ])

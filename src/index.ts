@@ -1,4 +1,4 @@
-import { controlRoles, nameFromAuthorOnly, nameFromContentsOnly, prohibitedRoles } from './dicts'
+import { controlRoles, nameFromAuthorOnly, prohibitedRoles } from './constants'
 
 import type { ARIARoleDefinitionKey } from 'aria-query'
 
@@ -35,10 +35,6 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
       `label[for="${element.id}"]`
     )
     return label ? getTextContent(label) : ''
-  }
-
-  if (hasRole(elementRoles, nameFromContentsOnly)) {
-    return getTextContent(element)
   }
 
   if (hasRole(elementRoles, nameFromAuthorOnly) || isDefinedByAuthor(element)) {
