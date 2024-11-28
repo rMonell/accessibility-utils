@@ -22,18 +22,14 @@ export const isVisible = (element: HTMLElement) => {
 /**
  * Check if at least one item match the of an iterable.
  */
-export const containKeys = <TItem, TMapValue>(
-  iterable: Set<TItem> | Map<TItem, TMapValue>,
-  items: TItem[]
-) => (items.length === 1 ? iterable.has(items[0]) : items.some(item => iterable.has(item)))
+export const containKeys = <TItem, TMapValue>(iterable: Set<TItem> | Map<TItem, TMapValue>, items: TItem[]) => {
+  return items.length === 1 ? iterable.has(items[0]) : items.some(item => iterable.has(item))
+}
 
 /**
  * Wrapper of `window.getComputedStyle` that throw explicit error instead of `console.error` log.
  */
-export const getComputedStyle = (
-  element: HTMLElement,
-  pseudoElt?: string | null
-): CSSStyleDeclaration => {
+export const getComputedStyle = (element: HTMLElement, pseudoElt?: string | null): CSSStyleDeclaration => {
   const originalError = console.error
   let rejects
   let result: CSSStyleDeclaration
@@ -64,7 +60,6 @@ export const getTextContent = (el: HTMLElement): string => {
   const elText = getAriaLabel(el) || el.textContent || el.getAttribute('title') || ''
   const before = getComputedStyle(el, ':before').getPropertyValue('content')
   const after = getComputedStyle(el, ':after').getPropertyValue('content')
-
   return parseAccessibleName([before, elText, after].join(''))
 }
 

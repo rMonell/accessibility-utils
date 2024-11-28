@@ -50,12 +50,4 @@ export const nameFromAuthorOnly = new Set<ARIARoleDefinitionKey>([
   'treegrid'
 ])
 
-export const controlRoles = new Set<ARIARoleDefinitionKey>([
-  'checkbox',
-  'combobox',
-  'listbox',
-  'radio',
-  'range',
-  'switch',
-  'textbox'
-])
+export const controlRoles = new Set<ARIARoleDefinitionKey>(['checkbox', 'combobox', 'listbox', 'radio', 'range', 'switch', 'textbox'])

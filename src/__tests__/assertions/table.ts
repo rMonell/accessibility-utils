@@ -1,4 +1,4 @@
-import { makeAssertion } from '../utils'
+import { makeAssertion } from '../../tests/utils'
 
 export default [
   makeAssertion(

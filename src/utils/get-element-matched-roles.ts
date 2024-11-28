@@ -8,12 +8,7 @@ const roleBySelectors = Array.from(roleElements.entries() || []).reduce(
         if (attr.constraints?.some(c => (c as string) === 'undefined')) {
           return acc
         }
-        return [
-          ...acc,
-          isUndefined(attr.value)
-            ? `[${attr.name}]`
-            : `[${attr.name}=${JSON.stringify(attr.value)}]`
-        ]
+        return [...acc, isUndefined(attr.value) ? `[${attr.name}]` : `[${attr.name}=${JSON.stringify(attr.value)}]`]
       }, [])
 
       if (acc) {
@@ -36,8 +31,5 @@ export const getElementMatchedRoles = (element: HTMLElement) => {
   if (explicitRole) {
     return [explicitRole as ARIARoleDefinitionKey]
   }
-  return allRoleSelectors.reduce<ARIARoleDefinitionKey[]>(
-    (acc, selectors) => (element.matches(selectors) ? [...acc, roleBySelectors[selectors]] : acc),
-    []
-  )
+  return allRoleSelectors.reduce<ARIARoleDefinitionKey[]>((acc, selectors) => (element.matches(selectors) ? [...acc, roleBySelectors[selectors]] : acc), [])
 }

@@ -14,10 +14,7 @@ export const getLabelledByAccessibleText = (element: HTMLElement, root: Element 
     }
 
     const lastChild = el.querySelector(':nth-last-child(1)')
-    const isAccessible =
-      el.childElementCount === 0
-        ? true
-        : !!lastChild && isHtmlElement(lastChild) && isVisible(lastChild)
+    const isAccessible = el.childElementCount === 0 ? true : !!lastChild && isHtmlElement(lastChild) && isVisible(lastChild)
 
     return isAccessible ? [...acc, el] : acc
   }, [])
