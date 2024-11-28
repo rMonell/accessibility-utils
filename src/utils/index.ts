@@ -1,6 +1,8 @@
 import type { ARIARoleDefinitionKey } from 'aria-query'
 
-export * from './get-element-roles'
+export const isUndefined = <TValue>(value?: TValue): value is undefined => {
+  return typeof value === 'undefined'
+}
 
 export const mapFromArray = <TArray>(arr: TArray[]): Map<TArray, number> => {
   return new Map(arr.map((e, i) => [e, i]))
@@ -71,3 +73,5 @@ export const getTextContent = (el: HTMLElement): string => {
 }
 
 export const getAuthorIds = (element: Element) => element.getAttribute('aria-labelledby')
+
+export * from './get-element-roles'
