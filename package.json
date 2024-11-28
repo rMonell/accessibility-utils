@@ -1,6 +1,6 @@
 {
   "name": "accessibility-utils",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Implementation of https://www.w3.org/TR/accname-1.2/ accessible name computation.",
   "type": "module",
   "license": "MIT",
