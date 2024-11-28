@@ -28,14 +28,15 @@ const roleBySelectors = Array.from(roleElements.entries() || []).reduce(
   {} as Record<string, ARIARoleDefinitionKey>
 )
 
-export const getElementRoles = (element: HTMLElement) => {
+const allRoleSelectors = Object.keys(roleBySelectors)
+
+export const getElementMatchedRoles = (element: HTMLElement) => {
   const explicitRole = element.getAttribute('role')
 
   if (explicitRole) {
     return [explicitRole as ARIARoleDefinitionKey]
   }
-
-  return Object.keys(roleBySelectors).reduce<ARIARoleDefinitionKey[]>(
+  return allRoleSelectors.reduce<ARIARoleDefinitionKey[]>(
     (acc, selectors) => (element.matches(selectors) ? [...acc, roleBySelectors[selectors]] : acc),
     []
   )

@@ -1,8 +1,6 @@
-import { mapFromArray } from './utils'
-
 import type { ARIARoleDefinitionKey } from 'aria-query'
 
-export const prohibitedRoles = mapFromArray<ARIARoleDefinitionKey>([
+export const prohibitedRoles = new Set([
   'caption',
   'code',
   'deletion',
@@ -17,7 +15,7 @@ export const prohibitedRoles = mapFromArray<ARIARoleDefinitionKey>([
   'superscript'
 ])
 
-export const nameFromAuthorOnly = mapFromArray<ARIARoleDefinitionKey>([
+export const nameFromAuthorOnly = new Set<ARIARoleDefinitionKey>([
   'alert',
   'application',
   'article',
@@ -52,7 +50,7 @@ export const nameFromAuthorOnly = mapFromArray<ARIARoleDefinitionKey>([
   'treegrid'
 ])
 
-export const controlRoles = mapFromArray<ARIARoleDefinitionKey>([
+export const controlRoles = new Set<ARIARoleDefinitionKey>([
   'checkbox',
   'combobox',
   'listbox',

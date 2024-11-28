@@ -4,15 +4,16 @@ import type { ARIARoleDefinitionKey } from 'aria-query'
 
 import {
   getAuthorIds,
-  getElementRoles,
+  getControlAccessibleText,
+  getElementMatchedRoles,
+  getLabelledByAccessibleText,
   getTextContent,
-  hasRole,
+  containKeys,
   isHtmlElement,
   isVisible,
   parseAccessibleName
 } from './utils'
 import { GetAccessibleNameOptions } from './types'
-import { getLabelledByAccessibleText } from './utils/get-labelled-by-accessible-text'
 
 const resolveTextContent = (element: HTMLElement | null) => (element ? getTextContent(element) : '')
 
@@ -47,9 +48,9 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
     return ''
   }
 
-  const elementRoles = getElementRoles(element)
+  const matchedRoles = getElementMatchedRoles(element)
 
-  if (elementRoles.length === 0 || hasRole(elementRoles, prohibitedRoles)) {
+  if (matchedRoles.length === 0 || containKeys(prohibitedRoles, matchedRoles)) {
     return ''
   }
 
@@ -58,11 +59,11 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
   if (getAuthorIds(element)) {
     return getLabelledByAccessibleText(element, root)
   }
-  if (hasRole(elementRoles, controlRoles)) {
-    return resolveTextContent(root.querySelector(`label[for="${element.id}"]`))
+  if (containKeys(controlRoles, matchedRoles)) {
+    return getControlAccessibleText(element, root)
   }
-  if (hasRole(elementRoles, nameFromAuthorOnly)) {
-    return authorTextFromRole[elementRoles[0]]?.(element) || ''
+  if (containKeys(nameFromAuthorOnly, matchedRoles)) {
+    return authorTextFromRole[matchedRoles[0]]?.(element) || ''
   }
   return getTextContent(element)
 }
