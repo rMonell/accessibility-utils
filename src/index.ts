@@ -8,32 +8,27 @@ import {
   getTextContent,
   hasRole,
   isHtmlElement,
-  isVisible
+  isVisible,
+  parseAccessibleName
 } from './utils'
 import { GetAccessibleNameOptions } from './types'
 import { getLabelledByAccessibleText } from './utils/get-labelled-by-accessible-text'
 
+const resolveTextContent = (element: HTMLElement | null) => (element ? getTextContent(element) : '')
+
 const authorTextFromRole: { [role in ARIARoleDefinitionKey]?: (element: HTMLElement) => string } = {
   group: el => {
     if (el.tagName === 'FIELDSET') {
-      const legendEl = el.querySelector('legend')
-      return legendEl ? getTextContent(legendEl) : ''
+      return resolveTextContent(el.querySelector('legend'))
     }
     if (el.tagName === 'DETAILS') {
-      const legendEl = el.querySelector('summary')
-      return legendEl ? getTextContent(legendEl) : ''
+      return resolveTextContent(el.querySelector('summary'))
     }
-    return getTextContent(el)
+    return ''
   },
-  img: el => getTextContent(el, el.getAttribute('alt')),
-  table: el => {
-    const captionEl = el.querySelector('caption')
-    return captionEl ? getTextContent(captionEl) : ''
-  },
-  figure: el => {
-    const captionEl = el.querySelector('figcaption')
-    return captionEl ? getTextContent(captionEl) : ''
-  }
+  img: el => parseAccessibleName(el.getAttribute('alt') || ''),
+  table: el => resolveTextContent(el.querySelector('caption')),
+  figure: el => resolveTextContent(el.querySelector('figcaption'))
 }
 
 /**
@@ -61,8 +56,7 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
   const root = options?.root || document
 
   if (hasRole(elementRoles, controlRoles)) {
-    const label: HTMLLabelElement | null = root.querySelector(`label[for="${element.id}"]`)
-    return label ? getTextContent(label) : ''
+    return resolveTextContent(root.querySelector(`label[for="${element.id}"]`))
   }
 
   if (hasRole(elementRoles, nameFromAuthorOnly) || !!getAuthorIds(element)) {

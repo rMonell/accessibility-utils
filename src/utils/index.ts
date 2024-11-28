@@ -16,28 +16,12 @@ export const hasRole = (
   return elementRoles.some(role => list.has(role))
 }
 
-export const getTextContent = (element: HTMLElement, defaultValue?: string | null): string => {
-  const textContent =
-    (element.getAttribute('aria-label') || element.textContent)?.trim() ||
-    defaultValue ||
-    element.getAttribute('title') ||
-    ''
-
-  // if (options.computedStyle) {
-  //   const before = window
-  //     .getComputedStyle(element, ":before")
-  //     .getPropertyValue("content");
-  //   const after = window
-  //     .getComputedStyle(element, ":before")
-  //     .getPropertyValue("content");
-  //   return [before, textContent, after].join("");
-  // }
-
-  return textContent
-}
-
+/**
+ * Implements [step 2A](https://www.w3.org/TR/accname-1.2/#computation-steps) computation step.
+ */
 export const isVisible = (element: HTMLElement) => {
   const style = window.getComputedStyle(element)
+
   return (
     style.getPropertyValue('display') !== 'none' ||
     style.getPropertyValue('visibility') !== 'hidden' ||
@@ -45,8 +29,45 @@ export const isVisible = (element: HTMLElement) => {
   )
 }
 
-export const getAuthorIds = (element: Element) => element.getAttribute('aria-labelledby')
-
 export const isHtmlElement = (element: Node): element is HTMLElement => {
   return element instanceof HTMLElement
 }
+
+/**
+ * Wrapper of `window.getComputedStyle` that throw explicit error instead of `console.error` log.
+ */
+export const getComputedStyle = (
+  element: HTMLElement,
+  pseudoElt?: string | null
+): CSSStyleDeclaration => {
+  const originalError = console.error
+  let rejects
+  let result: CSSStyleDeclaration
+
+  console.error = (...args) => (rejects = args)
+
+  try {
+    result = window.getComputedStyle(element, pseudoElt)
+  } finally {
+    console.error = originalError
+  }
+  if (rejects) {
+    throw rejects
+  }
+  return result
+}
+
+/**
+ * Normalizes resolved text content by removing trailing/leading spaces and line breaks.
+ */
+export const parseAccessibleName = (textContent: string) => textContent.trim()
+
+export const getTextContent = (el: HTMLElement): string => {
+  const elText = el.getAttribute('aria-label') || el.textContent || el.getAttribute('title') || ''
+  const before = getComputedStyle(el, ':before').getPropertyValue('content')
+  const after = getComputedStyle(el, ':after').getPropertyValue('content')
+
+  return parseAccessibleName([before, elText, after].join(''))
+}
+
+export const getAuthorIds = (element: Element) => element.getAttribute('aria-labelledby')

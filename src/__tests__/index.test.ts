@@ -151,6 +151,9 @@ describe('getAccessibleName', () => {
     const root = render(html)
     const target = root.querySelector(selector)
 
+    const { getComputedStyle } = window
+    window.getComputedStyle = elt => getComputedStyle(elt)
+
     if (!target) {
       throw 'Error'
     }
