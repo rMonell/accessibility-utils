@@ -1,22 +1,18 @@
 import { elementRoles as _elementRoles, ARIARoleDefinitionKey, roleElements } from 'aria-query'
-import { isUndefined } from '.'
+import { isUndefined, joinBy } from '.'
 
 const roleBySelectors = Array.from(roleElements.entries() || []).reduce(
   (acc, [role, roleRelationConcept]) => {
-    const selectors = Array.from(roleRelationConcept).reduce((acc, { name, attributes }) => {
-      const attrSelectors = (attributes || [])?.reduce<string[]>((acc, attr) => {
+    const selectors = joinBy(Array.from(roleRelationConcept), ', ', ({ name, attributes }) => {
+      const attrSelectors = joinBy(attributes || [], '', attr => {
         if (attr.constraints?.some(c => (c as string) === 'undefined')) {
-          return acc
+          return false
         }
-        return [...acc, isUndefined(attr.value) ? `[${attr.name}]` : `[${attr.name}=${JSON.stringify(attr.value)}]`]
-      }, [])
+        return isUndefined(attr.value) ? `[${attr.name}]` : `[${attr.name}=${JSON.stringify(attr.value)}]`
+      })
 
-      if (acc) {
-        acc += ','
-      }
-
-      return `${acc} ${name}${attrSelectors.join('')}`.trim()
-    }, '')
+      return `${name}${attrSelectors}`
+    })
 
     return { ...acc, [selectors]: role }
   },
@@ -27,7 +23,6 @@ const allRoleSelectors = Object.keys(roleBySelectors)
 
 export const getElementMatchedRoles = (element: HTMLElement) => {
   const explicitRole = element.getAttribute('role')
-
   if (explicitRole) {
     return [explicitRole as ARIARoleDefinitionKey]
   }

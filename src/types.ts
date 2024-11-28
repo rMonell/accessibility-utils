@@ -4,13 +4,16 @@ declare global {
   }
 }
 
-export interface GetAccessibleNameOptions {
+interface ConfigurableWindowOptions {
+  /**
+   * Custom window document.
+   */
+  window?: Window
+}
+
+export interface GetAccessibleNameOptions extends ConfigurableWindowOptions {
   /**
    * Ignore hidden element.
    */
   targetHidden?: boolean
-  /**
-   * Custom root document.
-   */
-  root?: Element
 }

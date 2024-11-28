@@ -6,6 +6,8 @@ export const isHtmlElement = (element: Node): element is HTMLElement => {
   return element instanceof HTMLElement
 }
 
+export const hasCustomTagName = (tagName: string) => !!window.customElements.get(tagName.toLowerCase())
+
 /**
  * Implements [step 2A](https://www.w3.org/TR/accname-1.2/#computation-steps) computation step.
  */
@@ -24,6 +26,26 @@ export const isVisible = (element: HTMLElement) => {
  */
 export const containKeys = <TItem, TMapValue>(iterable: Set<TItem> | Map<TItem, TMapValue>, items: TItem[]) => {
   return items.length === 1 ? iterable.has(items[0]) : items.some(item => iterable.has(item))
+}
+
+/**
+ * Join an array from a given item transformer / filter.
+ *
+ * @param arr - Items array
+ * @param separator - Result separator
+ * @param transformer - Transforms item or exclude item from join in case of falsy result.
+ */
+export const joinBy = <TItem>(arr: TItem[], separator: string, transformer: (item: TItem) => string | boolean) => {
+  return arr.reduce((acc, item, index) => {
+    const value = transformer(item)
+    if (typeof value === 'boolean' && !value) {
+      return acc
+    }
+    if (index > 0) {
+      acc += separator
+    }
+    return `${acc}${value}`
+  }, '')
 }
 
 /**
@@ -66,6 +88,28 @@ export const getTextContent = (el: HTMLElement): string => {
 export const getControlAccessibleText = (element: HTMLElement, root: Element | Document) => {
   const label: HTMLLabelElement | null = root.querySelector(`label[for="${element.id}"]`)
   return getAriaLabel(element) || (label && getTextContent(label)) || ''
+}
+
+export const getCustomElementAccessibleText = (element: HTMLElement) => {
+  const ariaLabel = getAriaLabel(element)
+  if (ariaLabel) {
+    return ariaLabel
+  }
+
+  const slots = element.shadowRoot?.querySelectorAll('slot')
+
+  if (!slots || slots.length === 0) {
+    return ''
+  }
+  return parseAccessibleName(
+    joinBy(Array.from(slots), ' ', slot => {
+      const assignedNodes = slot.assignedNodes()
+      if (assignedNodes.length === 0) {
+        return slot.textContent || ''
+      }
+      return joinBy(assignedNodes, ' ', node => node.textContent || '')
+    })
+  )
 }
 
 export * from './get-element-matched-roles'

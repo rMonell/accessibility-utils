@@ -18,6 +18,7 @@ expect.extend({
         pass: false
       }
     }
+
     const accessibleName = getAccessibleName(output)
     const isEqual = accessibleName === expected
     return {

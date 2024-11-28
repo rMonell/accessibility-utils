@@ -11,7 +11,9 @@ import {
   containKeys,
   isHtmlElement,
   isVisible,
-  parseAccessibleName
+  parseAccessibleName,
+  getCustomElementAccessibleText,
+  hasCustomTagName
 } from './utils'
 import { GetAccessibleNameOptions } from './types'
 
@@ -48,13 +50,17 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
     return ''
   }
 
+  if (hasCustomTagName(element.tagName)) {
+    return getCustomElementAccessibleText(element)
+  }
+
   const matchedRoles = getElementMatchedRoles(element)
 
   if (matchedRoles.length === 0 || containKeys(prohibitedRoles, matchedRoles)) {
     return ''
   }
 
-  const root = options?.root || document
+  const root = options?.window?.document || document
 
   if (getAuthorIds(element)) {
     return getLabelledByAccessibleText(element, root)
@@ -65,5 +71,6 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
   if (containKeys(nameFromAuthorOnly, matchedRoles)) {
     return authorTextFromRole[matchedRoles[0]]?.(element) || ''
   }
+
   return getTextContent(element)
 }
