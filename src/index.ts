@@ -55,15 +55,14 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
 
   const root = options?.root || document
 
+  if (getAuthorIds(element)) {
+    return getLabelledByAccessibleText(element, root)
+  }
   if (hasRole(elementRoles, controlRoles)) {
     return resolveTextContent(root.querySelector(`label[for="${element.id}"]`))
   }
-
-  if (hasRole(elementRoles, nameFromAuthorOnly) || !!getAuthorIds(element)) {
-    return (
-      authorTextFromRole[elementRoles[0]]?.(element) || getLabelledByAccessibleText(element, root)
-    )
+  if (hasRole(elementRoles, nameFromAuthorOnly)) {
+    return authorTextFromRole[elementRoles[0]]?.(element) || ''
   }
-
   return getTextContent(element)
 }
