@@ -1,5 +1,5 @@
 import { expect } from 'vitest'
-import { getAccessibleName } from '..'
+import { getAccessibleName } from '../get-accessible-name'
 
 interface CustomMatchers<TResult = unknown> {
   toHaveAccessibleName: (expectedName: string) => TResult

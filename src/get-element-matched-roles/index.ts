@@ -1,5 +1,5 @@
 import { elementRoles as _elementRoles, ARIARoleDefinitionKey, roleElements } from 'aria-query'
-import { isUndefined, joinBy } from '.'
+import { isUndefined, joinBy } from '../utils'
 
 const roleBySelectors = Array.from(roleElements.entries() || []).reduce(
   (acc, [role, roleRelationConcept]) => {

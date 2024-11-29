@@ -1,9 +1,3 @@
-declare global {
-  interface HTMLElement {
-    readonly tagName: Uppercase<keyof HTMLElementTagNameMap> | (string & {})
-  }
-}
-
 interface ConfigurableWindowOptions {
   /**
    * Custom window document.
