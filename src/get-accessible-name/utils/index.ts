@@ -1,4 +1,4 @@
-import { isHtmlElement, joinBy } from '../../utils'
+import { isHtmlElement, joinBy } from '@/utils'
 
 /**
  * Implements [step 2A](https://www.w3.org/TR/accname-1.2/#computation-steps) computation step.

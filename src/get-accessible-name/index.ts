@@ -1,9 +1,9 @@
-import { controlRoles, nameFromAuthorOnly, prohibitedRoles } from './constants'
+import { controlRoles, nameFromAuthorOnly, prohibitedRoles } from '@/get-accessible-name/constants'
 
 import type { ARIARoleDefinitionKey } from 'aria-query'
 
-import { containKeys, isHtmlElement, hasCustomTagName } from '../utils'
-import { GetAccessibleNameOptions } from './types'
+import { containKeys, isHtmlElement, hasCustomTagName } from '@/utils'
+import { GetAccessibleNameOptions } from '@/get-accessible-name/types'
 import {
   getAuthorIds,
   getControlAccessibleText,
@@ -12,8 +12,8 @@ import {
   getTextContent,
   isVisible,
   parseAccessibleName
-} from './utils'
-import { getElementMatchedRoles } from '../get-element-matched-roles'
+} from '@/get-accessible-name/utils'
+import { getElementMatchedRoles } from '@/get-element-matched-roles'
 
 const resolveTextContent = (element: HTMLElement | null) => (element ? getTextContent(element) : '')
 
