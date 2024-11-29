@@ -21,6 +21,8 @@ export default [
     `,
     'Custom label'
   ),
+  makeAssertion('input', '<input placeholder="Placeholder" />', 'Placeholder'),
+  makeAssertion('input', '<input title="Title" placeholder="Placeholder" />', 'Title'),
   makeAssertion(
     'input',
     `

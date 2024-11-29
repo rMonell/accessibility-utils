@@ -76,10 +76,12 @@ export const parseAccessibleName = (textContent: string) => textContent.trim()
 
 export const getAriaLabel = (el: HTMLElement) => el.getAttribute('aria-label')
 
+export const getTitle = (el: HTMLElement) => el.getAttribute('title')
+
 export const getAuthorIds = (element: Element) => element.getAttribute('aria-labelledby')
 
 export const getTextContent = (el: HTMLElement): string => {
-  const elText = getAriaLabel(el) || el.textContent || el.getAttribute('title') || ''
+  const elText = getAriaLabel(el) || el.textContent || getTitle(el) || ''
   const before = getComputedStyle(el, ':before').getPropertyValue('content')
   const after = getComputedStyle(el, ':after').getPropertyValue('content')
   return parseAccessibleName([before, elText, after].join(''))
@@ -87,7 +89,7 @@ export const getTextContent = (el: HTMLElement): string => {
 
 export const getControlAccessibleText = (element: HTMLElement, root: Element | Document) => {
   const label: HTMLLabelElement | null = root.querySelector(`label[for="${element.id}"]`)
-  return getAriaLabel(element) || (label && getTextContent(label)) || ''
+  return getAriaLabel(element) || (label && getTextContent(label)) || getTitle(element) || element.getAttribute('placeholder') || ''
 }
 
 export const getCustomElementAccessibleText = (element: HTMLElement) => {
