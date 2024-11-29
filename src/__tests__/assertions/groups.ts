@@ -20,11 +20,16 @@ export default [
     `,
     'Details'
   ),
+  makeAssertion('div', '<div role="banner">Welcome</div>', 'Welcome'),
   makeAssertion(
-    'div',
+    'optgroup',
     `
-     <div role="banner">Welcome</div>
+    <optgroup label="Group name" disabled>
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+    </optgroup>
     `,
-    'Welcome'
+    'Group name'
   )
 ]

@@ -27,6 +27,9 @@ const authorTextFromRole: { [role in ARIARoleDefinitionKey]?: (element: HTMLElem
     if (el.tagName === 'DETAILS') {
       return resolveTextContent(el.querySelector('summary'))
     }
+    if (el.tagName === 'OPTGROUP') {
+      return parseAccessibleName(el.getAttribute('label') || '')
+    }
     return ''
   },
   img: el => parseAccessibleName(el.getAttribute('alt') || ''),
