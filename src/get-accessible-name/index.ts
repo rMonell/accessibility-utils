@@ -2,7 +2,7 @@ import { controlRoles, nameFromAuthorOnly, prohibitedRoles } from '@/get-accessi
 
 import type { ARIARoleDefinitionKey } from 'aria-query'
 
-import { containKeys, isHtmlElement, hasCustomTagName } from '@/utils'
+import { isHtmlElement, hasCustomTagName } from '@/utils'
 import { GetAccessibleNameOptions } from '@/get-accessible-name/types'
 import {
   getAuthorIds,
@@ -13,7 +13,7 @@ import {
   isVisible,
   parseAccessibleName
 } from '@/get-accessible-name/utils'
-import { getElementMatchedRoles } from '@/get-element-matched-roles'
+import { resolveElementRole } from '@/resolve-element-role'
 
 const resolveTextContent = (element: HTMLElement | null) => (element ? getTextContent(element) : '')
 
@@ -55,9 +55,9 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
     return getCustomElementAccessibleText(element)
   }
 
-  const matchedRoles = getElementMatchedRoles(element)
+  const resolvedRole = resolveElementRole(element)
 
-  if (matchedRoles.length === 0 || containKeys(prohibitedRoles, matchedRoles)) {
+  if (!resolvedRole || prohibitedRoles.has(resolvedRole)) {
     return ''
   }
 
@@ -66,12 +66,11 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
   if (getAuthorIds(element)) {
     return getLabelledByAccessibleText(element, root)
   }
-  if (containKeys(controlRoles, matchedRoles)) {
+  if (controlRoles.has(resolvedRole)) {
     return getControlAccessibleText(element, root)
   }
-  if (containKeys(nameFromAuthorOnly, matchedRoles)) {
-    return authorTextFromRole[matchedRoles[0]]?.(element) || ''
+  if (nameFromAuthorOnly.has(resolvedRole)) {
+    return authorTextFromRole[resolvedRole]?.(element) || ''
   }
-
   return getTextContent(element)
 }

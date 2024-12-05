@@ -7,6 +7,9 @@ export const isHtmlElement = (element: Node): element is HTMLElement => {
 }
 
 export const hasCustomTagName = (tagName: string) => !!window.customElements.get(tagName.toLowerCase())
+
+export const keysOf = <O extends object>(obj: O): (keyof O)[] => Object.keys(obj) as (keyof O)[]
+
 /**
  * Check if at least one item match the of an iterable.
  */

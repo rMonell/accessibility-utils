@@ -1,4 +1,4 @@
 import { getAccessibleName } from './get-accessible-name'
-import { getElementMatchedRoles } from './get-element-matched-roles'
+import { resolveElementRole } from './resolve-element-role'
 
-export { getAccessibleName, getElementMatchedRoles }
+export { getAccessibleName, resolveElementRole }
