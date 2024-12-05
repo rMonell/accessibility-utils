@@ -51,6 +51,7 @@ export const nameFromAuthorOnly = new Set<ARIARoleDefinitionKey>([
 ])
 
 export const controlRoles = new Set<ARIARoleDefinitionKey>([
+  'button',
   'checkbox',
   'combobox',
   'listbox',
