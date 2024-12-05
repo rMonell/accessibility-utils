@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 
 import accessibleNameAssertions from './assertions'
-import { makeAssertion, render } from '@/tests/utils'
+import { render } from '@/tests/utils'
+import { makeAssertion } from '@/get-accessible-name/__tests__/utils'
 
 describe('getAccessibleName', () => {
   beforeAll(() => {

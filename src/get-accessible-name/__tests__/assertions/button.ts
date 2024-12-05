@@ -1,4 +1,4 @@
-import { makeAssertion } from '@/tests/utils'
+import { makeAssertion } from '@/get-accessible-name/__tests__/utils'
 
 export default [
   makeAssertion('button', '<button>Label</button>', 'Label'),
