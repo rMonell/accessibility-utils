@@ -1,4 +1,4 @@
-import type { ARIARoleDefinitionKey } from 'aria-query'
+import { ElementRole } from '@/types'
 
 export const prohibitedRoles = new Set([
   'caption',
@@ -15,7 +15,7 @@ export const prohibitedRoles = new Set([
   'superscript'
 ])
 
-export const nameFromAuthorOnly = new Set<ARIARoleDefinitionKey>([
+export const nameFromAuthorOnly = new Set<ElementRole>([
   'alert',
   'application',
   'article',
@@ -50,7 +50,7 @@ export const nameFromAuthorOnly = new Set<ARIARoleDefinitionKey>([
   'treegrid'
 ])
 
-export const controlRoles = new Set<ARIARoleDefinitionKey>([
+export const controlRoles = new Set<ElementRole>([
   'button',
   'checkbox',
   'combobox',

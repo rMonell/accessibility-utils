@@ -1,10 +1,11 @@
 import { describe, it, expect } from 'vitest'
+import { ElementRole } from '@/types'
 
 import { render } from '@/tests/utils'
-import { ARIARoleDefinitionKey } from 'aria-query'
+
 import { resolveElementRole } from '@/resolve-element-role'
 
-const makeAssertion = (html: string, expectedRole: ARIARoleDefinitionKey) => {
+const makeAssertion = (html: string, expectedRole: ElementRole) => {
   return { html, expectedRole }
 }
 

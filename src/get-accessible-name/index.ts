@@ -1,6 +1,5 @@
 import { controlRoles, nameFromAuthorOnly, prohibitedRoles } from '@/get-accessible-name/constants'
-
-import type { ARIARoleDefinitionKey } from 'aria-query'
+import { ElementRole } from '@/types'
 
 import { isHtmlElement, hasCustomTagName } from '@/utils'
 import { GetAccessibleNameOptions } from '@/get-accessible-name/types'
@@ -17,7 +16,7 @@ import { resolveElementRole } from '@/resolve-element-role'
 
 const resolveTextContent = (element: HTMLElement | null) => (element ? getTextContent(element) : '')
 
-const authorTextFromRole: { [role in ARIARoleDefinitionKey]?: (element: HTMLElement) => string } = {
+const authorTextFromRole: { [role in ElementRole]?: (element: HTMLElement) => string } = {
   group: el => {
     if (el.tagName === 'FIELDSET') {
       return resolveTextContent(el.querySelector('legend'))

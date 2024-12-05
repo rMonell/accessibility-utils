@@ -1,11 +1,11 @@
 import { expect } from 'vitest'
 import { getAccessibleName } from '../get-accessible-name'
 import { resolveElementRole } from '../resolve-element-role'
-import { ARIARoleDefinitionKey } from 'aria-query'
+import { ElementRole } from '@/types'
 
 interface CustomMatchers<TResult = unknown> {
   toHaveAccessibleName: (expectedName: string) => TResult
-  toHaveRole: (role: ARIARoleDefinitionKey) => TResult
+  toHaveRole: (role: ElementRole) => TResult
 }
 
 declare module 'vitest' {

@@ -1,5 +1,7 @@
-import { elementRoles as _elementRoles, ARIARoleDefinitionKey, roleElements } from 'aria-query'
+import { elementRoles as _elementRoles, roleElements } from 'aria-query'
 import { isUndefined, joinBy, keysOf } from '@/utils'
+
+import { ElementRole } from '@/types'
 
 const selectorFromRole = Array.from(roleElements.entries() || []).reduce(
   (acc, [role, roleRelationConcept]) => {
@@ -16,14 +18,14 @@ const selectorFromRole = Array.from(roleElements.entries() || []).reduce(
 
     return { ...acc, [role]: selectors }
   },
-  {} as Record<ARIARoleDefinitionKey, string>
+  {} as Record<ElementRole, string>
 )
 
 const allRoles = keysOf(selectorFromRole)
 
-export const resolveElementRole = (element: Element): ARIARoleDefinitionKey | undefined => {
+export const resolveElementRole = (element: Element): ElementRole | undefined => {
   if (!(element instanceof HTMLElement)) {
     return undefined
   }
-  return (element.getAttribute('role') as ARIARoleDefinitionKey) || allRoles.find(role => element.matches(selectorFromRole[role]))
+  return (element.getAttribute('role') as ElementRole) || allRoles.find(role => element.matches(selectorFromRole[role]))
 }
