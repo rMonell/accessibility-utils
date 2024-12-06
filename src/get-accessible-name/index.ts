@@ -60,7 +60,7 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
   if (getAuthorIds(element)) {
     return getLabelledByAccessibleText(element)
   }
-  if (controlRoles.has(resolvedRole) && element.tagName !== 'BUTTON') {
+  if (controlRoles.has(resolvedRole) && (resolvedRole === 'button' ? element.tagName === 'INPUT' : true)) {
     return getControlAccessibleText(element)
   }
   if (nameFromAuthorOnly.has(resolvedRole)) {
