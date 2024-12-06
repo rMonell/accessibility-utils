@@ -57,13 +57,11 @@ export const getAccessibleName = (element: Node, options?: GetAccessibleNameOpti
     return ''
   }
 
-  const root = options?.window?.document || document
-
   if (getAuthorIds(element)) {
-    return getLabelledByAccessibleText(element, root)
+    return getLabelledByAccessibleText(element)
   }
   if (controlRoles.has(resolvedRole) && element.tagName !== 'BUTTON') {
-    return getControlAccessibleText(element, root)
+    return getControlAccessibleText(element)
   }
   if (nameFromAuthorOnly.has(resolvedRole)) {
     return authorTextFromRole[resolvedRole]?.(element) || ''

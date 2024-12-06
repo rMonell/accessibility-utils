@@ -10,6 +10,7 @@ A lightweight Typescript library providing utilities to handle web accessibility
   
 ## Upcoming features
 
+  - Accessible name utility options.
   - Accessible descriptions computing.
   - Additional utilities for ARIA roles and semantic checks.
 
@@ -34,7 +35,6 @@ Computes the accessible name of an HTML element, strictly following [W3C guideli
   - `element` : HTML element for which to compute the accessible name.
   - `options` (optional) :
     - `targetHidden` _(boolean)_: Allows accessible name compute of hidden elements.
-    - `window` _(Window)_: Allows using a custom window instance.
 
 #### Returns
 

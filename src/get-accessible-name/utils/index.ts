@@ -52,7 +52,7 @@ export const getTextContent = (el: HTMLElement): string => {
   return parseAccessibleName([before, elText, after].join(''))
 }
 
-export const getLabelledByAccessibleText = (element: HTMLElement, root: Element | Document) => {
+export const getLabelledByAccessibleText = (element: HTMLElement) => {
   const authorIds = getAuthorIds(element)
 
   if (!authorIds) {
@@ -60,7 +60,7 @@ export const getLabelledByAccessibleText = (element: HTMLElement, root: Element 
   }
 
   const authorElements = authorIds.split(' ').reduce<HTMLElement[]>((acc, id) => {
-    const el = root.querySelector(`#${id}`)
+    const el = document.querySelector(`#${id}`)
     if (!el || !isHtmlElement(el)) {
       return acc
     }
@@ -74,8 +74,8 @@ export const getLabelledByAccessibleText = (element: HTMLElement, root: Element 
   return authorElements.length > 0 ? authorElements.map(el => getTextContent(el)).join(' ') : ''
 }
 
-export const getControlAccessibleText = (element: HTMLElement, root: Element | Document) => {
-  const label: HTMLLabelElement | null = root.querySelector(`label[for="${element.id}"]`)
+export const getControlAccessibleText = (element: HTMLElement) => {
+  const label: HTMLLabelElement | null = document.querySelector(`label[for="${element.id}"]`)
   return getAriaLabel(element) || (label && getTextContent(label)) || getTitle(element) || element.getAttribute('placeholder') || ''
 }
 

@@ -1,11 +1,4 @@
-export interface ConfigurableWindowOptions {
-  /**
-   * Allows using a custom window instance.
-   */
-  window?: Window
-}
-
-export interface GetAccessibleNameOptions extends ConfigurableWindowOptions {
+export interface GetAccessibleNameOptions {
   /**
    * Allows accessible name compute of hidden elements.
    *
