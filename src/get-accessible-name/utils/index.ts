@@ -47,9 +47,13 @@ export const getAuthorIds = (element: Element) => element.getAttribute('aria-lab
 
 export const getTextContent = (el: HTMLElement): string => {
   const elText = getAriaLabel(el) || el.textContent || getTitle(el) || ''
-  const before = getComputedStyle(el, ':before').getPropertyValue('content')
-  const after = getComputedStyle(el, ':after').getPropertyValue('content')
-  return parseAccessibleName([before, elText, after].join(''))
+  try {
+    const before = getComputedStyle(el, ':before').getPropertyValue('content')
+    const after = getComputedStyle(el, ':after').getPropertyValue('content')
+    return parseAccessibleName([before, elText, after].join(''))
+  } catch {
+    return parseAccessibleName(elText)
+  }
 }
 
 export const getLabelledByAccessibleText = (element: HTMLElement) => {

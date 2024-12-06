@@ -5,11 +5,6 @@ import { render } from '@/tests/utils'
 import { makeAssertion } from '@/get-accessible-name/__tests__/utils'
 
 describe('getAccessibleName', () => {
-  beforeAll(() => {
-    const { getComputedStyle } = window
-    window.getComputedStyle = elt => getComputedStyle(elt)
-  })
-
   describe('Default DOM', () => {
     it.each(accessibleNameAssertions)(`should have $expectedName as accessible name`, ({ selector, html, expectedName }) => {
       const root = render(html)
