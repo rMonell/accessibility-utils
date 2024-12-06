@@ -36,10 +36,7 @@ const authorTextFromRole: { [role in ElementRole]?: (element: HTMLElement) => st
 
 /**
  *
- * Implementation of [W3C](https://www.w3.org/) accessible name computation.
- *
- *
- * Sources :
+ * Computes the accessible name of an HTML element, strictly following [W3C guidelines](https://www.w3.org/TR/accname-1.2/) to ensure accurate results.
  *
  * @see {@link https://www.w3.org/TR/accname-1.2/}
  * @see {@link https://www.w3.org/TR/wai-aria-1.2/}

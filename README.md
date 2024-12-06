@@ -1,8 +1,20 @@
 # Accessibility Utils
 
-A Typescript library providing utilities to handle accessibility, specifically calculating the accessible names of HTML elements based on established W3C standards.
+A lightweight Typescript library providing utilities to handle web accessibility, with a focus on computing accessible names and roles of HTML elements according to [W3C standards](https://www.w3.org/).
+
+## Features
+
+  - **Accessible name computing**: Retrieve accurate, standards-based accessible names for HTML elements.
+  - **Element role resolution**: Identify ARIA roles of elements based on their semantics and attributes.
+  - **Standards-Compliant**: Follows the latest W3C guidelines and ARIA specifications.
+  
+## Upcoming features
+
+  - Accessible descriptions computing.
+  - Additional utilities for ARIA roles and semantic checks.
 
 ## Installation
+
 Add the library to your project using a package manager like npm or yarn:
 
 ```shell
@@ -15,41 +27,43 @@ npm install accessibility-utils
 
 #### Description
 
-This function computes the accessible name of an HTML element, strictly following (W3C guidelines)[https://www.w3.org/TR/accname-1.2/] to ensure accurate results.
+Computes the accessible name of an HTML element, strictly following [W3C guidelines](https://www.w3.org/TR/accname-1.2/) to ensure accurate results.
 
-##### Parameters
+#### Parameters
 
-  - `element`: An HTML element for which to calculate the accessible name.
+  - `element` : HTML element for which to compute the accessible name.
   - `options` (optional) :
-    - `targetHidden` _(boolean)_: Whether to include hidden elements. Default: true.
-    - `window` _(Window object)_: Allows using a custom document context.
+    - `targetHidden` _(boolean)_: Allows accessible name compute of hidden elements.
+    - `window` _(Window)_: Allows using a custom window instance.
 
-##### Returns
+#### Returns
 
-A string representing the accessible name of the element.
+The accessible name of the element based on [W3C guidelines](https://www.w3.org/TR/accname-1.2/). If the accessible cannot be determined, an empty string is returned.
+
+#### Sources
+
+  - https://www.w3.org/TR/accname-1.2/
+  - https://www.w3.org/TR/wai-aria-1.2/
 
 ### `resolveElementRole(element)`
 
 #### Description
 
-This function determines which ARIA roles apply to a given HTML element based on its attributes, structure, and semantics.
+Identifies the applicable ARIA role for a given element based on its attributes, structure, and semantics.
 
-##### Parameters:
+#### Returns
 
-  - `element`: An HTML element.
-
-##### Returns
-
-An array of strings representing the matched ARIA roles.
-
-## Compatibility
-
-  - Browsers: Compatible with modern browsers supporting DOM APIs.
-  - Dependencies: The library relies on `aria-query` for ARIA role definitions.
+The first matched ARIA role, or `undefined` if no role matches the given element
 
 ## Contribution
 
-Contributions are welcome! To report an issue or suggest an enhancement, open an issue or submit a pull request on the GitHub repository.
+Contributions are welcome! If you'd like to improve the library, add new features, or fix issues, please follow these steps:
+
+ 1. Fork the repository.
+ 2. Create a branch for your feature or bug fix.
+ 3. Submit a pull request with a detailed description of your changes.
+
+For any suggestions, feedback, or questions, feel free to [open an issue](https://github.com/rMonell/accessibility-utils/issues/new).
 
 ## License
 

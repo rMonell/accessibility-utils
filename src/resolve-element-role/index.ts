@@ -23,6 +23,9 @@ const selectorFromRole = Array.from(roleElements.entries() || []).reduce(
 
 const allRoles = keysOf(selectorFromRole)
 
+/**
+ * Determines which ARIA roles apply to a given HTML element based on its attributes, structure, and semantics.
+ */
 export const resolveElementRole = (element: Element): ElementRole | undefined => {
   if (!(element instanceof HTMLElement)) {
     return undefined
