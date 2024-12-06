@@ -1,6 +1,6 @@
 {
   "name": "accessibility-utils",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Lightweight Typescript library providing utilities to handle web accessibility.",
   "type": "module",
   "license": "MIT",
