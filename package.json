@@ -1,7 +1,7 @@
 {
   "name": "accessibility-utils",
   "version": "0.2.0",
-  "description": "Implementation of https://www.w3.org/TR/accname-1.2/ accessible name computation.",
+  "description": "Lightweight Typescript library providing utilities to handle web accessibility.",
   "type": "module",
   "license": "MIT",
   "exports": {
