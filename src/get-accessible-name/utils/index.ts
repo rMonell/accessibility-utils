@@ -1,19 +1,6 @@
 import { isHtmlElement, joinBy } from '@/utils'
 
 /**
- * Implements [step 2A](https://www.w3.org/TR/accname-1.2/#computation-steps) computation step.
- */
-export const isVisible = (element: HTMLElement) => {
-  const style = window.getComputedStyle(element)
-
-  return (
-    style.getPropertyValue('display') !== 'none' ||
-    style.getPropertyValue('visibility') !== 'hidden' ||
-    (!!element.getAttribute('aria-hidden') && element.getAttribute('aria-hidden') === 'true')
-  )
-}
-
-/**
  * Wrapper of `window.getComputedStyle` that throw explicit error instead of `console.error` log.
  */
 export const getComputedStyle = (element: HTMLElement, pseudoElt?: string | null): CSSStyleDeclaration => {
@@ -32,6 +19,19 @@ export const getComputedStyle = (element: HTMLElement, pseudoElt?: string | null
     throw rejects
   }
   return result
+}
+
+/**
+ * Implements [step 2A](https://www.w3.org/TR/accname-1.2/#computation-steps) computation step.
+ */
+export const isVisible = (element: HTMLElement) => {
+  const style = getComputedStyle(element)
+
+  return (
+    style.getPropertyValue('display') !== 'none' ||
+    style.getPropertyValue('visibility') !== 'hidden' ||
+    (!!element.getAttribute('aria-hidden') && element.getAttribute('aria-hidden') === 'true')
+  )
 }
 
 /**
