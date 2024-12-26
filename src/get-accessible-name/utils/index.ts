@@ -24,20 +24,27 @@ export const getComputedStyle = (element: HTMLElement, pseudoElt?: string | null
 /**
  * Implements [step 2A](https://www.w3.org/TR/accname-1.2/#computation-steps) computation step.
  */
-export const isVisible = (element: HTMLElement) => {
+export const isVisible = (element: HTMLElement, options?: { ignoreInheritedParentVisibility?: boolean }) => {
   const style = getComputedStyle(element)
+  const display = style.getPropertyValue('display')
+  const ariaHidden = element.getAttribute('aria-hidden')
+  const visibility = options?.ignoreInheritedParentVisibility ? element.style.visibility : style.getPropertyValue('visibility')
 
-  return (
-    style.getPropertyValue('display') !== 'none' ||
-    style.getPropertyValue('visibility') !== 'hidden' ||
-    (!!element.getAttribute('aria-hidden') && element.getAttribute('aria-hidden') === 'true')
-  )
+  if ((!!display && display === 'none') || (!!visibility && ['collapse', 'hidden'].includes(visibility)) || (!!ariaHidden && ariaHidden === 'true')) {
+    return false
+  }
+  return true
 }
 
 /**
  * Normalizes resolved text content by removing trailing/leading spaces and line breaks.
  */
-export const parseAccessibleName = (textContent: string) => textContent.trim()
+export const parseAccessibleName = (textContent: string) => {
+  return textContent
+    .trim()
+    .replace(/\s*\n\s*/g, ' ')
+    .replace(/\s+/g, ' ')
+}
 
 export const getAriaLabel = (el: HTMLElement) => el.getAttribute('aria-label')
 
@@ -63,19 +70,29 @@ export const getLabelledByAccessibleText = (element: HTMLElement) => {
     return ''
   }
 
-  const authorElements = authorIds.split(' ').reduce<HTMLElement[]>((acc, id) => {
+  return joinBy(authorIds.split(' '), ' ', id => {
     const el = document.querySelector(`#${id}`)
     if (!el || !isHtmlElement(el)) {
-      return acc
+      return false
+    }
+    const overrideAttrs = getAriaLabel(el) || getTitle(el)
+
+    if (overrideAttrs) {
+      return overrideAttrs
+    }
+    if (el.childElementCount === 0) {
+      return getTextContent(el)
     }
 
-    const lastChild = el.querySelector(':nth-last-child(1)')
-    const isAccessible = el.childElementCount === 0 ? true : !!lastChild && isHtmlElement(lastChild) && isVisible(lastChild)
-
-    return isAccessible ? [...acc, el] : acc
-  }, [])
-
-  return authorElements.length > 0 ? authorElements.map(el => getTextContent(el)).join(' ') : ''
+    return parseAccessibleName(
+      joinBy(Array.from(el.childNodes), ' ', children => {
+        if (children.nodeType === Node.TEXT_NODE) {
+          return children.textContent ? parseAccessibleName(children.textContent) : ''
+        }
+        return isHtmlElement(children) && isVisible(children, { ignoreInheritedParentVisibility: true }) ? getTextContent(children) || '' : false
+      })
+    )
+  })
 }
 
 export const getControlAccessibleText = (element: HTMLElement) => {
