@@ -1,3 +1,5 @@
+import { resolveElementRole } from '@/resolve-element-role'
+import { ElementRole } from '@/types'
 import { isHtmlElement, joinBy } from '@/utils'
 
 /**
@@ -95,9 +97,43 @@ export const getLabelledByAccessibleText = (element: HTMLElement) => {
   })
 }
 
+const textContentGetterByControlRole: Partial<Record<ElementRole, (el: HTMLInputElement) => string | null | undefined>> = {
+  textbox: el => el.value,
+  combobox: el => el.value || el.textContent,
+  listbox: el => el.value || el.querySelector('[aria-selected]')?.textContent,
+  slider: el => el.value || el.getAttribute('aria-valuetext') || el.getAttribute('aria-valuenow'),
+  spinbutton: el => el.value || el.getAttribute('aria-valuetext') || el.getAttribute('aria-valuenow')
+}
+
 export const getControlAccessibleText = (element: HTMLElement) => {
   const label: HTMLLabelElement | null = document.querySelector(`label[for="${element.id}"]`)
-  return getAriaLabel(element) || (label && getTextContent(label)) || getTitle(element) || element.getAttribute('placeholder') || ''
+  const specificLabel = getAriaLabel(element) || (label && getTextContent(label)) || getTitle(element) || element.getAttribute('placeholder') || ''
+
+  if (specificLabel) {
+    return specificLabel
+  }
+
+  const parentLabel = element.parentElement?.tagName === 'LABEL' ? element.parentElement : null
+
+  if (!parentLabel) {
+    return ''
+  }
+
+  return parseAccessibleName(
+    joinBy(Array.from(parentLabel.childNodes), ' ', child => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        return child.textContent ? parseAccessibleName(child.textContent) : ''
+      }
+      if (!isHtmlElement(child)) {
+        return ''
+      }
+      const childRole = resolveElementRole(child)
+      if (!childRole) {
+        return ''
+      }
+      return textContentGetterByControlRole[childRole]?.(child as HTMLInputElement) || ''
+    })
+  )
 }
 
 export const getCustomElementAccessibleText = (element: HTMLElement) => {
