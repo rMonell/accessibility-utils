@@ -15,41 +15,6 @@ export const prohibitedRoles = new Set([
   'superscript'
 ])
 
-export const nameFromAuthorOnly = new Set<ElementRole>([
-  'alert',
-  'application',
-  'article',
-  'blockquote',
-  'definition',
-  'directory',
-  'document',
-  'feed',
-  'figure',
-  'grid',
-  'group',
-  'img',
-  'list',
-  'log',
-  'main',
-  'marquee',
-  'math',
-  'navigation',
-  'note',
-  'region',
-  'rowgroup',
-  'separator',
-  'status',
-  'table',
-  'tabpanel',
-  'term',
-  'textbox',
-  'time',
-  'timer',
-  'toolbar',
-  'tree',
-  'treegrid'
-])
-
 export const controlRoles = new Set<ElementRole>([
   'button',
   'checkbox',

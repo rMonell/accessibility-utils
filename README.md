@@ -34,7 +34,7 @@ Computes the accessible name of an HTML element, strictly following [W3C guideli
 
   - `element` : HTML element for which to compute the accessible name.
   - `options` (optional) :
-    - `targetHidden` _(boolean)_: Allows accessible name compute of hidden elements.
+    - `ignoreHiddenElements` _(boolean)_: Allows accessible name compute of hidden elements.
 
 #### Returns
 

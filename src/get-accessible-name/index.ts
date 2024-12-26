@@ -1,37 +1,52 @@
-import { controlRoles, nameFromAuthorOnly, prohibitedRoles } from '@/get-accessible-name/constants'
-import { ElementRole } from '@/types'
+import { controlRoles, prohibitedRoles } from '@/get-accessible-name/constants'
+import { ElementRole, TagName } from '@/types'
 
 import { isHtmlElement, hasCustomTagName } from '@/utils'
 import { GetAccessibleNameOptions } from '@/get-accessible-name/types'
 import {
-  getAuthorIds,
+  getAriaLabel,
   getControlAccessibleText,
   getCustomElementAccessibleText,
-  getLabelledByAccessibleText,
+  getStringAttr,
   getTextContent,
-  isVisible,
-  parseAccessibleName
+  getTitle,
+  isElementVisible,
+  parseAccessibleName,
+  resolveLabelledByAccessibleText
 } from '@/get-accessible-name/utils'
 import { resolveElementRole } from '@/resolve-element-role'
 
-const resolveTextContent = (element: HTMLElement | null) => (element ? getTextContent(element) : '')
+const resolveTextContent = (element: HTMLElement | null, root: HTMLElement) => (element ? getTextContent(element) : getTextContent(root))
 
-const authorTextFromRole: { [role in ElementRole]?: (element: HTMLElement) => string } = {
+const accessibleTextFallbackFromRole: { [role in ElementRole]?: (element: HTMLElement) => string } = {
   group: el => {
     if (el.tagName === 'FIELDSET') {
-      return resolveTextContent(el.querySelector('legend'))
+      return resolveTextContent(el.querySelector('legend'), el)
     }
     if (el.tagName === 'DETAILS') {
-      return resolveTextContent(el.querySelector('summary'))
+      return resolveTextContent(el.querySelector('summary'), el)
     }
     if (el.tagName === 'OPTGROUP') {
       return parseAccessibleName(el.getAttribute('label') || '')
     }
-    return ''
+    return getTitle(el) || getTextContent(el)
   },
-  img: el => parseAccessibleName(el.getAttribute('alt') || ''),
-  table: el => resolveTextContent(el.querySelector('caption')),
-  figure: el => resolveTextContent(el.querySelector('figcaption'))
+  img: el => {
+    const ariaLabel = getAriaLabel(el)
+    if (ariaLabel) {
+      return parseAccessibleName(ariaLabel)
+    }
+    if (el.hasAttribute('alt') && !getStringAttr(el, 'alt')) {
+      return ''
+    }
+    return parseAccessibleName(getStringAttr(el, 'alt') || getTitle(el) || '')
+  },
+  table: el => resolveTextContent(el.querySelector('caption'), el),
+  figure: el => resolveTextContent(el.querySelector('figcaption'), el)
+}
+
+const accessibleTextFromTagName: { [tagName in TagName]?: (element: HTMLElement) => string } = {
+  ABBR: el => getTitle(el) || getTextContent(el)
 }
 
 /**
@@ -42,29 +57,32 @@ const authorTextFromRole: { [role in ElementRole]?: (element: HTMLElement) => st
  * @see {@link https://www.w3.org/TR/wai-aria-1.2/}
  * @see {@link https://www.w3.org/TR/html-aam/}
  */
-export const getAccessibleName = (element: Node, options?: GetAccessibleNameOptions): string => {
-  if (!isHtmlElement(element) || (!options?.targetHidden && !isVisible(element))) {
+export const getAccessibleName = (element: Element, options?: GetAccessibleNameOptions): string => {
+  if (!isHtmlElement(element)) {
+    return getTextContent(element)
+  }
+  if (!options?.ignoreHiddenElements && !isElementVisible(element)) {
     return ''
   }
-
   if (hasCustomTagName(element.tagName)) {
     return getCustomElementAccessibleText(element)
   }
-
   const resolvedRole = resolveElementRole(element)
-
-  if (!resolvedRole || prohibitedRoles.has(resolvedRole)) {
+  if (!resolvedRole) {
+    return accessibleTextFromTagName[element.tagName]?.(element) || getTextContent(element)
+  }
+  if (prohibitedRoles.has(resolvedRole)) {
     return ''
   }
-
-  if (getAuthorIds(element)) {
-    return getLabelledByAccessibleText(element)
+  const labelledBy = getStringAttr(element, 'aria-labelledby')
+  if (labelledBy) {
+    return resolveLabelledByAccessibleText(labelledBy, element)
   }
   if (controlRoles.has(resolvedRole) && (resolvedRole === 'button' ? element.tagName === 'INPUT' : true)) {
     return getControlAccessibleText(element)
   }
-  if (nameFromAuthorOnly.has(resolvedRole)) {
-    return authorTextFromRole[resolvedRole]?.(element) || ''
+  if (resolvedRole in accessibleTextFallbackFromRole) {
+    return accessibleTextFallbackFromRole[resolvedRole]?.(element) || ''
   }
   return getTextContent(element)
 }

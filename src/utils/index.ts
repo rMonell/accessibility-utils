@@ -2,9 +2,15 @@ export const isUndefined = <TValue>(value?: TValue): value is undefined => {
   return typeof value === 'undefined'
 }
 
+export const isBoolean = (value?: any): value is boolean => {
+  return typeof value === 'boolean'
+}
+
 export const isHtmlElement = (element: Node): element is HTMLElement => {
   return element instanceof HTMLElement
 }
+
+export const isStringEmpty = (str: string) => str.trim() === ''
 
 export const hasCustomTagName = (tagName: string) => !!window.customElements.get(tagName.toLowerCase())
 
@@ -27,7 +33,7 @@ export const containKeys = <TItem, TMapValue>(iterable: Set<TItem> | Map<TItem, 
 export const joinBy = <TItem>(arr: TItem[], separator: string, transformer: (item: TItem) => string | boolean) => {
   return arr.reduce((acc, item, index) => {
     const value = transformer(item)
-    if (typeof value === 'boolean' && !value) {
+    if (isBoolean(value) && !value) {
       return acc
     }
     if (index > 0) {

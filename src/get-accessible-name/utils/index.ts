@@ -1,104 +1,22 @@
+import { getAriaLabel, getTextContent, getTitle, parseAccessibleName, resolveElementText } from '@/get-accessible-name/utils/helpers'
 import { resolveElementRole } from '@/resolve-element-role'
 import { ElementRole } from '@/types'
-import { isHtmlElement, joinBy } from '@/utils'
+import { isStringEmpty, joinBy } from '@/utils'
 
-/**
- * Wrapper of `window.getComputedStyle` that throw explicit error instead of `console.error` log.
- */
-export const getComputedStyle = (element: HTMLElement, pseudoElt?: string | null): CSSStyleDeclaration => {
-  const originalError = console.error
-  let rejects
-  let result: CSSStyleDeclaration
+export * from './helpers'
 
-  console.error = (...args) => (rejects = args)
-
-  try {
-    result = window.getComputedStyle(element, pseudoElt)
-  } finally {
-    console.error = originalError
-  }
-  if (rejects) {
-    throw rejects
-  }
-  return result
-}
-
-/**
- * Implements [step 2A](https://www.w3.org/TR/accname-1.2/#computation-steps) computation step.
- */
-export const isVisible = (element: HTMLElement, options?: { ignoreInheritedParentVisibility?: boolean }) => {
-  const style = getComputedStyle(element)
-  const display = style.getPropertyValue('display')
-  const ariaHidden = element.getAttribute('aria-hidden')
-  const visibility = options?.ignoreInheritedParentVisibility ? element.style.visibility : style.getPropertyValue('visibility')
-
-  if ((!!display && display === 'none') || (!!visibility && ['collapse', 'hidden'].includes(visibility)) || (!!ariaHidden && ariaHidden === 'true')) {
-    return false
-  }
-  return true
-}
-
-/**
- * Normalizes resolved text content by removing trailing/leading spaces and line breaks.
- */
-export const parseAccessibleName = (textContent: string) => {
-  return textContent
-    .trim()
-    .replace(/\s*\n\s*/g, ' ')
-    .replace(/\s+/g, ' ')
-}
-
-export const getAriaLabel = (el: HTMLElement) => el.getAttribute('aria-label')
-
-export const getTitle = (el: HTMLElement) => el.getAttribute('title')
-
-export const getAuthorIds = (element: Element) => element.getAttribute('aria-labelledby')
-
-export const getTextContent = (el: HTMLElement): string => {
-  const elText = getAriaLabel(el) || el.textContent || getTitle(el) || ''
-  try {
-    const before = getComputedStyle(el, ':before').getPropertyValue('content')
-    const after = getComputedStyle(el, ':after').getPropertyValue('content')
-    return parseAccessibleName([before, elText, after].join(''))
-  } catch {
-    return parseAccessibleName(elText)
-  }
-}
-
-export const getLabelledByAccessibleText = (element: HTMLElement) => {
-  const authorIds = getAuthorIds(element)
-
-  if (!authorIds) {
-    return ''
-  }
-
-  return joinBy(authorIds.split(' '), ' ', id => {
+export const resolveLabelledByAccessibleText = (labelledBy: string, root: HTMLElement) => {
+  const referencedText = joinBy(labelledBy.split(' '), ' ', id => {
     const el = document.querySelector(`#${id}`)
-    if (!el || !isHtmlElement(el)) {
-      return false
-    }
-    const overrideAttrs = getAriaLabel(el) || getTitle(el)
-
-    if (overrideAttrs) {
-      return overrideAttrs
-    }
-    if (el.childElementCount === 0) {
-      return getTextContent(el)
-    }
-
-    return parseAccessibleName(
-      joinBy(Array.from(el.childNodes), ' ', children => {
-        if (children.nodeType === Node.TEXT_NODE) {
-          return children.textContent ? parseAccessibleName(children.textContent) : ''
-        }
-        return isHtmlElement(children) && isVisible(children, { ignoreInheritedParentVisibility: true }) ? getTextContent(children) || '' : false
-      })
-    )
+    return el ? getAriaLabel(el) || resolveElementText(el) : false
   })
+  return isStringEmpty(referencedText) ? parseAccessibleName(getAriaLabel(root) || getTitle(root) || '') : parseAccessibleName(referencedText)
 }
 
-const textContentGetterByControlRole: Partial<Record<ElementRole, (el: HTMLInputElement) => string | null | undefined>> = {
+const textContentByRole: Partial<Record<ElementRole, (el: HTMLInputElement) => string | null | undefined>> = {
   textbox: el => el.value,
+  button: el => (el.type === 'image' ? el.getAttribute('alt') : el.value),
+  img: el => el.getAttribute('alt'),
   combobox: el => el.value || el.textContent,
   listbox: el => el.value || el.querySelector('[aria-selected]')?.textContent,
   slider: el => el.value || el.getAttribute('aria-valuetext') || el.getAttribute('aria-valuenow'),
@@ -106,32 +24,37 @@ const textContentGetterByControlRole: Partial<Record<ElementRole, (el: HTMLInput
 }
 
 export const getControlAccessibleText = (element: HTMLElement) => {
-  const label: HTMLLabelElement | null = document.querySelector(`label[for="${element.id}"]`)
-  const specificLabel = getAriaLabel(element) || (label && getTextContent(label)) || getTitle(element) || element.getAttribute('placeholder') || ''
-
-  if (specificLabel) {
-    return specificLabel
+  const ariaLabel = getAriaLabel(element)
+  if (ariaLabel) {
+    return parseAccessibleName(ariaLabel)
   }
 
-  const parentLabel = element.parentElement?.tagName === 'LABEL' ? element.parentElement : null
+  const labelEls: NodeListOf<HTMLLabelElement> = document.querySelectorAll(`label[for="${element.id}"]`)
+  if (labelEls.length > 0) {
+    return joinBy(Array.from(labelEls), ' ', getTextContent)
+  }
 
-  if (!parentLabel) {
-    return ''
+  const fallbackLabel = getTitle(element) || element.getAttribute('placeholder') || ''
+  if (fallbackLabel) {
+    return parseAccessibleName(fallbackLabel)
+  }
+
+  const wrapperLabel = element.parentElement?.tagName === 'LABEL' ? element.parentElement : null
+
+  if (!wrapperLabel) {
+    return textContentByRole[resolveElementRole(element) as ElementRole]?.(element as HTMLInputElement) || ''
   }
 
   return parseAccessibleName(
-    joinBy(Array.from(parentLabel.childNodes), ' ', child => {
+    joinBy(Array.from(wrapperLabel.childNodes), ' ', child => {
       if (child.nodeType === Node.TEXT_NODE) {
-        return child.textContent ? parseAccessibleName(child.textContent) : ''
-      }
-      if (!isHtmlElement(child)) {
-        return ''
+        return child.textContent || ''
       }
       const childRole = resolveElementRole(child)
-      if (!childRole) {
+      if (!childRole || wrapperLabel.firstElementChild?.isEqualNode(child)) {
         return ''
       }
-      return textContentGetterByControlRole[childRole]?.(child as HTMLInputElement) || ''
+      return textContentByRole[childRole]?.(child as HTMLInputElement) || ''
     })
   )
 }

@@ -7,5 +7,5 @@ export interface GetAccessibleNameOptions {
    * It should therefore be used for specific needs.
    *
    */
-  targetHidden?: boolean
+  ignoreHiddenElements?: boolean
 }

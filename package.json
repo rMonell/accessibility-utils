@@ -18,6 +18,7 @@
     "dev": "vite",
     "build": "unbuild",
     "preview": "vite preview",
+    "prepare": "unbuild",
     "test": "vitest"
   },
   "devDependencies": {
