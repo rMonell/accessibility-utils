@@ -1,4 +1,5 @@
 import { isHtmlElement, isStringEmpty, joinBy } from '@/utils'
+import { ARIAPropertyMap } from 'aria-query'
 
 export const isElementVisible = (element: HTMLElement) => {
   const style = getComputedStyle(element)
@@ -91,7 +92,7 @@ export const getTitle = (el: Element) => getStringAttr(el, 'title')
 /**
  * Wrapper of `window.getComputedStyle` that throw explicit error instead of `console.error` log.
  */
-export const getComputedStyle = (element: HTMLElement, pseudoElt?: string | null): CSSStyleDeclaration => {
+export const getComputedStyle = (element: HTMLElement, pseudoElt?: ':before' | ':after' | (string & {}) | null): CSSStyleDeclaration => {
   const originalError = console.error
   let rejects
   let result: CSSStyleDeclaration
@@ -109,7 +110,7 @@ export const getComputedStyle = (element: HTMLElement, pseudoElt?: string | null
   return result
 }
 
-export const getStringAttr = (el: Element, attr: string) => {
+export const getStringAttr = (el: Element, attr: keyof ARIAPropertyMap | (string & {})) => {
   const value = el.getAttribute(attr)
   if (!value) {
     return undefined

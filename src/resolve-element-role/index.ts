@@ -42,6 +42,7 @@ const selectorFromRole = roleElementsArray.reduce(
 )
 
 const allRoles = keysOf(selectorFromRole)
+
 /**
  * Determines which ARIA roles apply to a given HTML element based on its attributes, structure, and semantics.
  */

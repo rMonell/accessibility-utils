@@ -1,14 +1,8 @@
-export const isUndefined = <TValue>(value?: TValue): value is undefined => {
-  return typeof value === 'undefined'
-}
+export const isUndefined = <TValue>(value?: TValue): value is undefined => typeof value === 'undefined'
 
-export const isBoolean = (value?: any): value is boolean => {
-  return typeof value === 'boolean'
-}
+export const isBoolean = (value?: any): value is boolean => typeof value === 'boolean'
 
-export const isHtmlElement = (element: Node): element is HTMLElement => {
-  return element instanceof HTMLElement
-}
+export const isHtmlElement = (element: Node): element is HTMLElement => element instanceof HTMLElement
 
 export const isStringEmpty = (str: string) => str.trim() === ''
 
