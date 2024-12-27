@@ -4,6 +4,10 @@
   "description": "Lightweight Typescript library providing utilities to handle web accessibility.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+		"type": "git",
+		"url": "https://github.com/rMonell/accessibility-utils.git"
+	},
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
